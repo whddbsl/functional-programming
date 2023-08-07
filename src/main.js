@@ -6,7 +6,9 @@
 // --------------------------------------------------------------------------
 
 //* 웹 표준 : 파일 확장자 필요
-//* Vite 환경 : 파일 확장자 생략 가능
+//* Vite 환경 : 파일 확장자 생략 가능 (.js, .jsx. .ts. tsx)
 
+
+import './styles/main.css'
 import './FP/chapters/00-programming-paradigm';
 
