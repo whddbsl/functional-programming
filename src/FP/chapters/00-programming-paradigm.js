@@ -23,8 +23,7 @@ const courses = [
 // 1. 과정 배열을 순환하여 각 과정 이름의 좌우 공백 제거
 // 2. 과정 배열을 순환하여 각 과정 이름 대문자화
 
-//* ES2015(v6)
-//* 전개구문(spread syntax)을 사용하면 배열을 복사할 수 있다.
+//* ES2015(v6) - 전개구문(spread syntax)을 사용하면 배열을 복사할 수 있다.
 
 let updateCourses = [...courses];
 
@@ -204,12 +203,12 @@ function createCountUpButton(container, { count: initialCount = 0, step = 1 } = 
 //* 붕어빵틀(생성자함수: 클래스) 
 class CountUpButton {
   constructor(userOptions) {
-    this.#config = { ...CountUpButton.defaultProps, ...userOptions };
+    // this.#config = { ...CountUpButton.defaultProps, ...userOptions };
     this.init()
   }
 
   init() {
-    console.log(this.#config);
+    // console.log(this.#config);
   }
 
   //? static? : 정적 메서드는 클래스의 인스턴스 없이 호출할 수 있는 메서드입니다.
