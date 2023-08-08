@@ -266,8 +266,7 @@ class CountUpButtonComponent extends HTMLElement {
 //* 무조건 케밥 케이스 사용
 customElements.define("count-up-button", CountUpButtonComponent);
 
-//! 리액트 잘하려면? 단일 책임 원칙에 의한 재사용이 가능한 함수를 잘 만들어야 한다.
-
+//! 리액트 잘하려면? 단일 책임 원칙에 의한 재사용이 가능한 함수를 잘 만들어야 한다
 //* 2일차
 class CountUpButton {
   //* static field
