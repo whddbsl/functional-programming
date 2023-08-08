@@ -26,7 +26,7 @@ const courses = [
 //* ES2015(v6) - 전개구문(spread syntax)을 사용하면 배열을 복사할 수 있다.
 
 let updateCourses = [...courses];
-
+// console.log("원래 데이터\n", courses);
 // 기능 1. 좌우 공백 제거
 //* 객체를 복제를 하지 않으면 참조에 의한 복사이므로 원본이 변경된다.
 for (let i = 0, l = updateCourses.length; i < l; i = i + 1) {
@@ -39,12 +39,15 @@ for (let i = 0, l = updateCourses.length; i < l; i = i + 1) {
 }
 
 // 기능 2. 대문자화
+//? 여기서는 왜 안에서 한번 더 복사를 하지 않을까?
+//> 이미 첫 번째 for문에서 'updateCourses[i] = course'를 통해 복사가 되었기 때문에 
+//> 두 번째 for문에서는 updateCourses 배열의 객체를 수정해도 원본 배열은 영향을 받지 않는다.
+
 for (let i = 0, l = updateCourses.length; i < l; i = i + 1) {
   const course = updateCourses[i];
   course.name = course.name.toUpperCase();
 }
-
-// console.log("변형된 데이터\n", updateCourses);
+console.log("변형된 데이터\n", updateCourses);
 
 // 기능 3. 배열 원소의 name 속성의 공백을 밑줄로 변경하는 기능 추가
 for (let i = 0, l = updateCourses.length; i < l; i = i + 1) {
@@ -52,7 +55,7 @@ for (let i = 0, l = updateCourses.length; i < l; i = i + 1) {
   course.name = course.name.replace(/\s+/g, "_");
   updateCourses[i] = course;
 }
-// console.log(updateCourses);
+console.log(updateCourses);
 
 //? Object.is() : 메서드를 사용하여 두 값이 같은지 확인합니다. true 또는 false를 반환합니다.
 //? console.assert() : 주어진 조건이 거짓인 경우 콘솔에 오류 메시지를 출력합니다.
@@ -153,7 +156,7 @@ const updateSubjects = subjects.map(toTrim).map(toUpperCase).map(toUnderscore);
 // → 함수(function)를 사용해 구현합니다.
 
 //* count는 처음 시작하는 수, step은 증가하는 수
-
+//* initialCount는 별칭 
 function createCountUpButton(container, { count: initialCount = 0, step = 1 } = {}) {
 
   if (!container || container.nodeType !== document.ELEMENT_NODE) {
@@ -165,33 +168,45 @@ function createCountUpButton(container, { count: initialCount = 0, step = 1 } = 
 
   const countUpButton = document.createElement("button");
 
+  //? newCount를 String으로 변환하는 이유?
+  //> textContent는 문자열만 받기 때문에
+  //* 초기 값 설정
   const render = (newCount) => {
     countUpButton.textContent = String(newCount);
   };
 
+  //* 클릭 시 count 증가 
   const handleCountUp = () => {
     console.log("click");
     count += step;
     render(count);
   };
 
+  //* 버튼 속성 설정
   countUpButton.setAttribute("type", "button");
+  //* 버튼 클래스 설정
   countUpButton.classList.add("countUpButton");
   countUpButton.addEventListener("click", handleCountUp);
+  //? 여기서 render(count) 한번 더 호출하는 이유?
+  //> 초기 값 설정을 위해
   render(count);
-
+  
+  //* 버튼을 container에 추가
   container.append(countUpButton);
 }
 
+//* 버튼을 생성할 곳 지정
 // const demoContainer = document.getElementById("demo");
 
 //* 기본값 : {count: 0, step: 1} => react에서 props와 같은 개념
 //! 과제) 기본값에 max = 10 추가해서 10이 되면 더이상 카운팅 되지 않게 설계
 //* max prop을 추가하고, count 값이 max보다 커지면 사용자가 더 이상 버튼을 누를 수 없도록 막는다.
 //* max prop을 추가하고, count 값이 max보다 커지면 화면의 카운트는 버튼을 눌러도 max 값에 머무른다.
-//? 상태로 입력에 반응 참고
+//> (노션) 상태로 입력에 반응 참고
 
+//* 기본 값으로 버튼 생성
 // createCountUpButton(demoContainer);
+//* count:1 로 버튼 생성
 // createCountUpButton(demoContainer, { count: 1 });
 // createCountUpButton(demoContainer, { count: 2 });
 // createCountUpButton(demoContainer, { count: 3, step: 2 });
@@ -200,19 +215,23 @@ function createCountUpButton(container, { count: initialCount = 0, step = 1 } = 
 // JavaScript 프로그래밍 패러다임
 // → 클래스(class)를 사용해 구현합니다. (참고: https://mzl.la/3QrTKlF)
 
+//! 클래스는 잘 모르겠음 ㅋㅎ
 //* 붕어빵틀(생성자함수: 클래스) 
 class CountUpButton {
   constructor(userOptions) {
-    // this.#config = { ...CountUpButton.defaultProps, ...userOptions };
+    //? #config : 클래스 내부에서만 사용할 수 있는 private field
+    this.#config = { ...CountUpButton.defaultProps, ...userOptions };
     this.init()
   }
 
+  //? 여기서 init() 함수를 만들어서 사용하는 이유?
+  //> 생성자 함수에서는 비동기 함수를 사용할 수 없기 때문에
   init() {
-    // console.log(this.#config);
+    console.log(this.#config);
   }
 
-  //? static? : 정적 메서드는 클래스의 인스턴스 없이 호출할 수 있는 메서드입니다.
-  // static field
+  //? defaultProps앞에 static을 붙이는 이유?
+  //> 클래스의 인스턴스를 생성하지 않고도 접근할 수 있기 때문에
   static defaultProps = {
     count: 0,
     step: 1,
