@@ -40,7 +40,7 @@ for (let i = 0, l = updateCourses.length; i < l; i = i + 1) {
 
 // 기능 2. 대문자화
 //? 여기서는 왜 안에서 한번 더 복사를 하지 않을까?
-//> 이미 첫 번째 for문에서 'updateCourses[i] = course'를 통해 복사가 되었기 때문에 
+//> 이미 첫 번째 for문에서 'updateCourses[i] = course'를 통해 복사가 되었기 때문에
 //> 두 번째 for문에서는 updateCourses 배열의 객체를 수정해도 원본 배열은 영향을 받지 않는다.
 
 for (let i = 0, l = updateCourses.length; i < l; i = i + 1) {
@@ -156,9 +156,11 @@ const updateSubjects = subjects.map(toTrim).map(toUpperCase).map(toUnderscore);
 // → 함수(function)를 사용해 구현합니다.
 
 //* count는 처음 시작하는 수, step은 증가하는 수
-//* initialCount는 별칭 
-function createCountUpButton(container, { count: initialCount = 0, step = 1 } = {}) {
-
+//* initialCount는 별칭
+function createCountUpButton(
+  container,
+  { count: initialCount = 0, step = 1 } = {}
+) {
   if (!container || container.nodeType !== document.ELEMENT_NODE) {
     throw new Error("container는 문서의 요소가 아닙니다.");
   }
@@ -175,7 +177,7 @@ function createCountUpButton(container, { count: initialCount = 0, step = 1 } = 
     countUpButton.textContent = String(newCount);
   };
 
-  //* 클릭 시 count 증가 
+  //* 클릭 시 count 증가
   const handleCountUp = () => {
     console.log("click");
     count += step;
@@ -190,7 +192,7 @@ function createCountUpButton(container, { count: initialCount = 0, step = 1 } = 
   //? 여기서 render(count) 한번 더 호출하는 이유?
   //> 초기 값 설정을 위해
   render(count);
-  
+
   //* 버튼을 container에 추가
   container.append(countUpButton);
 }
@@ -216,42 +218,138 @@ function createCountUpButton(container, { count: initialCount = 0, step = 1 } = 
 // → 클래스(class)를 사용해 구현합니다. (참고: https://mzl.la/3QrTKlF)
 
 //! 클래스는 잘 모르겠음 ㅋㅎ
-//* 붕어빵틀(생성자함수: 클래스) 
-class CountUpButton {
-  constructor(userOptions) {
-    //? #config : 클래스 내부에서만 사용할 수 있는 private field
-    this.#config = { ...CountUpButton.defaultProps, ...userOptions };
-    this.init()
-  }
+//* 붕어빵틀(생성자함수: 클래스)
+// class CountUpButton {
+//   constructor(userOptions) {
+//     //? #config : 클래스 내부에서만 사용할 수 있는 private field
+//     this.#config = { ...CountUpButton.defaultProps, ...userOptions };
+//     this.init();
+//   }
 
-  //? 여기서 init() 함수를 만들어서 사용하는 이유?
-  //> 생성자 함수에서는 비동기 함수를 사용할 수 없기 때문에
-  init() {
-    console.log(this.#config);
-  }
+//   //? 여기서 init() 함수를 만들어서 사용하는 이유?
+//   //> 생성자 함수에서는 비동기 함수를 사용할 수 없기 때문에
+//   init() {
+//     console.log(this.#config);
+//   }
 
-  //? defaultProps앞에 static을 붙이는 이유?
-  //> 클래스의 인스턴스를 생성하지 않고도 접근할 수 있기 때문에
-  static defaultProps = {
-    count: 0,
-    step: 1,
-  };
-}
-
+//   //? defaultProps앞에 static을 붙이는 이유?
+//   //> 클래스의 인스턴스를 생성하지 않고도 접근할 수 있기 때문에
+//   static defaultProps = {
+//     count: 0,
+//     step: 1,
+//   };
+// }
 
 //* 새로운(new) 붕어빵(인스턴스: 객체) 생성
-const firstCountUp = new CountUpButton({
-  count: 2, 
-  step: 7,
-});
-const secondCountUp = new CountUpButton();
-const thirdCountUp = new CountUpButton();
+// const firstCountUp = new CountUpButton({
+//   count: 2,
+//   step: 7,
+// });
+// const secondCountUp = new CountUpButton();
+// const thirdCountUp = new CountUpButton();
 
-const demoContainer = document.getElementById("demo");
+// const demoContainer = document.getElementById("demo");
 
-// demoContainer.append(firstCountUp.render()); 
+// demoContainer.append(firstCountUp.render());
 // --------------------------------------------------------------------------
 // 웹 컴포넌트(Web Components) API
 // → 웹 컴포넌트를 사용해 구현합니다. (참고: https://mzl.la/3YjFdu9)
 
+class CountUpButtonComponent extends HTMLElement {
+  constructor() {
+    super()
+    this.innerHTML = /*html*/ `
+    <button type="button">9</button>
+    `;
+  }
+}
+//* 무조건 케밥 케이스 사용
+customElements.define("count-up-button", CountUpButtonComponent);
+
 //! 리액트 잘하려면? 단일 책임 원칙에 의한 재사용이 가능한 함수를 잘 만들어야 한다.
+
+//* 2일차
+class CountUpButton {
+  //* static field
+  static version = "0.0.1-alpha";
+
+  //* 기본 Props
+  static defaultProps = {
+    count: 0,
+    step: 1,
+    max: 10,
+  };
+
+  //* private field
+  //* must be declared
+  #count;
+  #props = {};
+  #button = null;
+
+  //* 라이프 사이클 메서드
+  //> 생성(constructor) 시점
+  constructor(props) {
+    console.log("생성 시점");
+    //? 꼭 객체로 state를 관리해야 할까?
+    // this.state = {
+    //   count: props.count ?? 0,
+    // };
+    //* 클래스가 생성한 인스턴스의 상태
+    this.#count = props.count ?? 0;
+    //* 인스턴스가 사용할 데이터(외부에서 사용자가 전달한 데이터와 병합)
+    this.#props = { ...CountUpButton.defaultProps, ...props };
+  }
+
+  //* 렌더 (HTMLElement Node)
+  //* return type : HTMLButtonElement
+  render() {
+    const button = document.createElement("button");
+    button.setAttribute("type", "button");
+    button.textContent = String(this.#count);
+    this.#button = button;
+
+    this.bindEvents();
+
+    return button;
+  }
+
+  //* 렌더 (HTML String)
+  //* return type : string
+  renderHTML() {
+    return `
+    <button type="button">${String(this.#count)}</button>
+    `;
+  }
+
+  bindEvents() {
+    this.#button.addEventListener("click", (e) => {
+      console.log(e.target);
+    });
+  }
+
+  //> 마운트(mount) 시점 -> 실제 DOM에 추가
+  //* 버튼이 ELEMENT이므로 append()를 사용한다.
+  //* HTML이면 insertAdjacentHTML()을 사용한다.
+  mount(container) {
+    //* ELEMENT이면 -> type : object
+    container?.append?.(this.render());
+    //* HTML이면 -> type : string
+    container?.insertAdjacentHTML?.("beforeend", this.renderHTML());
+  }
+
+  //> 성장(update) 시점
+  //> 소멸(unmount) 시점
+  unmount() {
+    console.log("소멸 시점");
+  }
+}
+
+const firstCountUp = new CountUpButton({
+  count: 9,
+});
+
+globalThis.firstCountUp = firstCountUp;
+
+const demoContainer = document.getElementById("demo");
+
+firstCountUp.mount(demoContainer);
